@@ -52,7 +52,7 @@
     color: green;
   }
 
-  p[class="type-Autre"] {
+  p[class="type-Guest"] {
     color: blue;
   }
 }

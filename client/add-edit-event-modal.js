@@ -36,6 +36,9 @@ Template.addEditEventModal.helpers({
                 title: Meteor.user().username
             };
         }
+    },
+    currentUser() {
+        return Meteor.user();
     }
 });
 
@@ -50,7 +53,9 @@ Template.addEditEventModal.events({
             start: template.find( '[name="start"]' ).value,
             end: template.find( '[name="end"]' ).value,
             type: template.find( '[name="type"] option:selected' ).value,
-            guests: parseInt( template.find( '[name="guests"]' ).value, 10 )
+            guests: parseInt( template.find( '[name="guests"]' ).value, 10 ),
+            comment: template.find( '[name="comment"]' ).value,
+            author : Meteor.userId()
         };
 
         if ( submitType === 'editEvent' ) {

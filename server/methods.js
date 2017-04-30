@@ -9,7 +9,9 @@ Meteor.methods({
       start: String,
       end: String,
       type: String,
-      guests: Number
+      guests: Number,
+      comment : Match.Optional( String ),
+      author : String
     });
 
     try {
@@ -26,7 +28,8 @@ Meteor.methods({
       start: String,
       end: String,
       type: Match.Optional( String ),
-      guests: Match.Optional( Number )
+      guests: Match.Optional( Number ),
+      comment : Match.Optional( String )
     });
 
     try {

@@ -28,11 +28,15 @@ let EventsSchema = new SimpleSchema({
   'type': {
     type: String,
     label: 'What type of event is this?',
-    allowedValues: [ 'Babault', 'Famille', 'Autre' ]
+    allowedValues: [ 'Babault', 'Famille', 'Guest' ]
   },
   'guests': {
     type: Number,
     label: 'The number of guests expected at this event.'
+  },
+  'author': {
+    type: String,
+    label: 'Author of the event'
   }
 });
 

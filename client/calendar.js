@@ -12,6 +12,7 @@ let isPast = ( date ) => {
 Template.calendar.onCreated( () => {
     let template = Template.instance();
     template.subscribe( 'events' );
+    template.subscribe( 'currentUser' );
 });
 
 Template.calendar.onRendered( () => {
