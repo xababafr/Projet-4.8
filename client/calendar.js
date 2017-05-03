@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
+import { ReactiveVar } from 'meteor/reactive-var';
 
 // https://themeteorchef.com/tutorials/reactive-calendars-with-fullcalendar
 // http://getbootstrap.com/javascript/#modals
@@ -13,6 +14,40 @@ Template.calendar.onCreated( () => {
     let template = Template.instance();
     template.subscribe( 'events' );
     template.subscribe( 'currentUser' );
+});
+
+Template.calendar.helpers({
+    currentCalendarSemester() {
+
+          var moment = Session.get('getData');
+          var month = moment.get('month') + 1;
+          var year = moment.get('year');
+          var sem;
+
+          console.log(moment);
+          console.log(month);
+          console.log(year);
+
+          // si on est en été
+          if(month >= 3 && month <= 8)
+            sem = 1;
+          else // sinon on est en hiver
+            sem = 2;
+
+          console.log(sem);
+
+          if(year < 2017)
+            return(0);
+          else {
+              return ( (year-2017)*2 + sem );
+          }
+    },
+    currentDate() {
+        //return Session.get('getDate');
+        template = Template.instance();
+        console.log(template);
+        return template.data.currentDate;
+    }
 });
 
 Template.calendar.onRendered( () => {
@@ -77,6 +112,49 @@ Template.calendar.onRendered( () => {
             $( '#add-edit-event-modal' ).modal( 'show' );
         }
     });
+
+    console.log('CREATION');
+    console.log($("#Calendar").fullCalendar('getDate'));
+
+    // bon alors en fait un truc du genre :
+    // tracker.autorun(
+    //     $(calendar).click(
+    //         Session.set(theMoment, fullcalendar.getDate)
+    //         (  faire un $(#TEST).html a la palce d'un Session.set, et du coup y'a surement meme pas besoin du tracker autorun!!! )
+    //     )
+    // )
+    // on capte n'importe quel click sur le calendrier, et à chaque click,
+)
+)
+
+    // on passe le moment en variable réactive?! nan mais naaan
+    var moment = $("#Calendar").fullCalendar('getDate');
+    var month = moment.get('month') + 1;
+    var year = moment.get('year');
+    var sem;
+
+    console.log(moment);
+    console.log(month);
+    console.log(year);
+
+    // si on est en été
+    if(month >= 3 && month <= 8)
+      sem = 1;
+    else // sinon on est en hiver
+      sem = 2;
+
+    console.log(sem);
+
+    if(year < 2017)
+      $('#TEST').html(0);
+    else {
+        $('#TEST').html( (year-2017)*2 + sem );
+    }
+
+    //this.data.currentDate = $("#Calendar").fullCalendar('getDate');
+    //this.data.gateau = "gateau";
+
+    //Session.set('getDate',($("#Calendar").fullCalendar('getDate')));
 
     Tracker.autorun( () => {
         Events.find().fetch();

@@ -14,11 +14,17 @@ Meteor.methods({
       author : String
     });
 
-    try {
-      return Events.insert( event );
-    } catch ( exception ) {
-      throw new Meteor.Error( '500', `${ exception }` );
+    let user = Meteor.user();
+
+    if(event.title == user.username) {
+        try {
+          return Events.insert( event );
+        } catch ( exception ) {
+          throw new Meteor.Error( '500', `${ exception }` );
+        }
     }
+    else
+        throw new Meteor.Error( '500', `${ exception }` );
   },
 
   editEvent( event ) {
@@ -29,26 +35,49 @@ Meteor.methods({
       end: String,
       type: Match.Optional( String ),
       guests: Match.Optional( Number ),
-      comment : Match.Optional( String )
+      comment : Match.Optional( String ),
+      author : Match.Optional( String )
     });
 
-    try {
-      return Events.update( event._id, {
-        $set: event
-      });
-    } catch ( exception ) {
-      throw new Meteor.Error( '500', `${ exception }` );
+    // l'evenement pas encore modifié dans la bdd
+    let actualEvent = Events.findOne({'_id' : event._id});
+    let user = Meteor.user();
+
+    // on a le droit d'editer un event que si c'est le notre ou que l'on est un admin
+    if(user.role == "Admin" || actualEvent.author == user._id) {
+        try {
+          return Events.update( event._id, {
+              $set: event
+          });
+        }
+        catch ( exception ) {
+            throw new Meteor.Error( '500', `/!\\ add : ${ exception }` );
+        }
     }
+    else
+        throw new Meteor.Error( '500', 'Vous n\'avez pas les droits nécessaires' );
+
   },
 
 removeEvent( event ) {
     check( event, String );
 
-    try {
-      return Events.remove( event );
-    } catch ( exception ) {
-      throw new Meteor.Error( '500', `${ exception }` );
+    // l'evenement pas encore modifié dans la bdd
+    let actualEvent = Events.findOne({'_id' : event});
+    let user = Meteor.user();
+
+    // on a le droit de supprimer un event que si c'est le notre ou que l'on est un admin
+    if(user.role == "Admin" || actualEvent.author == user._id) {
+        try {
+            return Events.remove( event );
+        }
+        catch ( exception ) {
+            throw new Meteor.Error( '500', `/!\\ edit : ${ exception }` );
+        }
     }
+    else
+        throw new Meteor.Error( '500', 'Vous n\'avez pas les droits nécessaires' );
+
   }
 
 });

@@ -39,6 +39,12 @@ Template.addEditEventModal.helpers({
     },
     currentUser() {
         return Meteor.user();
+    },
+    isDisabled() {
+        if(Meteor.user().role == 'Admin')
+            return " ";
+        else
+            return "disabled";
     }
 });
 

@@ -14,7 +14,7 @@
             <div class="row">
                   <div class="col-xs-12 col-sm-4">
                     <label for="type">Priorité de réservation</label>
-                    <select disabled name="type" class="form-control">
+                    <select {{disabled}} name="type" class="form-control">
                       <option selected="{{selected currentUser.role 'Babault' }}" value="Babault">Babault</option>
                       <option selected="{{selected currentUser.role 'Famille' }}" value="Famille">Famille</option>
                       <option selected="{{selected currentUser.role 'Guest' }}" value="Guest">Invité</option>
