@@ -10,6 +10,33 @@ let isPast = ( date ) => {
     return moment( today ).isAfter( date );
 };
 
+let getSaison = ( month ) => {
+    if(month >= 3 && month <= 8)
+      return 'Été';
+    else // sinon on est en hiver
+      return 'Hiver';
+}
+
+let getSaisonNumber = ( month, year ) => {
+    let saison = getSaison(month);
+    let nbr;
+
+    // le cas particulier
+    if(saison == 'Hiver' && month < 3)
+        year = year-1;
+
+    // si on est en été
+    if(month >= 3 && month <= 8)
+        sem = 1;
+    else // sinon on est en hiver
+        sem = 2;
+
+   if(year < 2017)
+       return (0);
+   else
+       return ( (year-2017)*2 + sem );
+}
+
 Template.calendar.onCreated( () => {
     let template = Template.instance();
     template.subscribe( 'events' );
@@ -17,7 +44,7 @@ Template.calendar.onCreated( () => {
 });
 
 Template.calendar.helpers({
-    currentCalendarSemester() {
+    /*currentCalendarSemester() {
 
           var moment = Session.get('getData');
           var month = moment.get('month') + 1;
@@ -47,7 +74,7 @@ Template.calendar.helpers({
         template = Template.instance();
         console.log(template);
         return template.data.currentDate;
-    }
+    }*/
 });
 
 Template.calendar.onRendered( () => {
@@ -100,61 +127,36 @@ Template.calendar.onRendered( () => {
 
         // Methode dayClick
         dayClick( date ) {
-            console.log('DAYCLICK');
             Session.set( 'eventModal', { type: 'add', date: date.format() } );
             $( '#add-edit-event-modal' ).modal( 'show' );
         },
 
         // Methode eventClick
         eventClick( event ) {
-            console.log('EVENTCLICK');
             Session.set( 'eventModal', { type: 'edit', event: event._id } );
             $( '#add-edit-event-modal' ).modal( 'show' );
         }
     });
 
-    console.log('CREATION');
-    console.log($("#Calendar").fullCalendar('getDate'));
+    $('#Calendar').click(function() {
+        let moment = $("#Calendar").fullCalendar('getDate');
+        let month = moment.get('month') + 1;
+        let year = moment.get('year');
+        let saison = getSaison( month );
+        let txt;
+        if(saison == 'Hiver')
+            if(month < 3)
+                txt = saison + ' ' + (year-1) + '/' + year;
+            else
+                txt = saison + ' ' + year + '/' + (year+1);
+        else
+            txt = saison + ' ' + year;
 
-    // bon alors en fait un truc du genre :
-    // tracker.autorun(
-    //     $(calendar).click(
-    //         Session.set(theMoment, fullcalendar.getDate)
-    //         (  faire un $(#TEST).html a la palce d'un Session.set, et du coup y'a surement meme pas besoin du tracker autorun!!! )
-    //     )
-    // )
-    // on capte n'importe quel click sur le calendrier, et à chaque click,
-)
-)
+        txt = txt + ' / Saison n°' + getSaisonNumber(month,year);
+        $('#TEST').html( txt );
+    });
 
-    // on passe le moment en variable réactive?! nan mais naaan
-    var moment = $("#Calendar").fullCalendar('getDate');
-    var month = moment.get('month') + 1;
-    var year = moment.get('year');
-    var sem;
-
-    console.log(moment);
-    console.log(month);
-    console.log(year);
-
-    // si on est en été
-    if(month >= 3 && month <= 8)
-      sem = 1;
-    else // sinon on est en hiver
-      sem = 2;
-
-    console.log(sem);
-
-    if(year < 2017)
-      $('#TEST').html(0);
-    else {
-        $('#TEST').html( (year-2017)*2 + sem );
-    }
-
-    //this.data.currentDate = $("#Calendar").fullCalendar('getDate');
-    //this.data.gateau = "gateau";
-
-    //Session.set('getDate',($("#Calendar").fullCalendar('getDate')));
+    $('#Calendar').trigger('click');
 
     Tracker.autorun( () => {
         Events.find().fetch();

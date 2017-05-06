@@ -68,6 +68,11 @@ Template.addEditEventModal.events({
             eventItem._id   = eventModal.event;
         }
 
+        // pour l'ajout, on récupere l'ancienne valeur de la saisn, et on lui rajoute le nommbre de semaines de l'event actuel
+        // pour l'edit, c'est plus chaud. On récupère l'ancienne valeur de la saison, on récupère la différence entre le nouvel event et son ancienne version, et on ajoute ça à la saison donnée.
+        // dans le cas où une date chevaucherait deux saisons, on considère la date de départ comme etant celle fixant la saison (car de toute façon getSaison et getSaisonNumber se basent sur le mois acutel, et donc sur la date de depart)
+        //  pour le remove, c'est assez easy
+
         Meteor.call( submitType, eventItem, ( error ) => {
           if ( error ) {
               Bert.alert( error.reason, 'danger' );
