@@ -153,7 +153,22 @@ Template.calendar.onRendered( () => {
             txt = saison + ' ' + year;
 
         txt = txt + ' / Saison n°' + getSaisonNumber(month,year);
-        $('#TEST').html( txt );
+
+        $('#Infos').html( txt );
+
+        Meteor.call('seasonReady', month, year,function(error,retour){
+            txt = '  <img src="/images/' +
+            (retour ? 'ready' : 'locked') +
+            '.png" alt="seasonReady" style="width:33px;height:33px;" />';
+
+            txt2 = ' <span id="infobulle" style="display:inline-block;padding:3px 2px 1px 2px;height:25px;color:'+ (retour ? 'green' : 'red') +';border:2px solid '+ (retour ? 'green' : 'red') +';position:relative;right:5px;">' +
+            (retour ? 'Cette saison est ouverte à la réservation!' : 'Ce semestre est bloqué pour le moment.') +
+            '</span>';
+
+            $('#Season').html( txt );
+            $('#Infobulle').html( txt2 );
+        });
+
     });
 
     $('#Calendar').trigger('click');

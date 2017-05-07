@@ -31,6 +31,20 @@ let getSeasonBounds = (month, year) => {
     return ({start: startSeason, end : endSeason});
 }
 
+let indexOfId = (array, id) => {
+    console.log('appel de indexOfId');
+    for(var i = 0; i < array.length; i++ ) {
+        let el = array[i];
+        let idbis = el._id;
+
+        // egalité entre les strings, l'égalité normale ne fonctionnait pas
+        if(id.localeCompare(el._id) == 0) {
+            return (i);
+        }
+    }
+    return (-1);
+}
+
 Meteor.methods({
 
   // ------------------------------------
@@ -216,6 +230,35 @@ removeEvent( event ) {
 
       return( {weeks : weeks, events : i} );
 
+  },
+
+  // si chaque Babault de la bdd a réservé au mois un event dans le semestre concerné, l'indicateur passe de bloqué à débloqué, et les autres peuvent réserver. Si on est un admin, on peux toujours réserver.
+  seasonReady( month, year ) {
+      check(month, Match.Integer);
+      check(year, Match.Integer);
+
+      if(Meteor.user().role == 'Admin')
+          return true;
+
+      let bounds = getSeasonBounds(month,year);
+
+      // les id de tous les babaults
+      let babaults = Meteor.users.find({'role' : 'Babault'}, { fields: { _id: 1 } }).fetch();
+
+      let events = Events.find({
+          'start' : { $gte : bounds.start, $lt: bounds.end }
+      }).fetch();
+
+      _.each(events,function(event) {
+          let index = indexOfId(babaults,event.author);
+
+          if(index != -1) {
+              console.log('splice!');
+              babaults.splice(index,1);
+          }
+      });
+
+      return (babaults.length == 0);
   }
 
 });

@@ -55,4 +55,7 @@
   p[class="type-Guest"] {
     color: blue;
   }
+
+#container div {
+    display:inline;
 }
