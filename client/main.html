@@ -3,11 +3,41 @@
 </head>
 
 <body>
-  <h1>Chalet des Babault! <form id="method"><input type="submit"></form></h1>
+  <h1>Chalet des Babault! </h1>
 
       {{> loginButtons}}
       {{#if currentUser}}
           {{> calendar}}
+          {{else}}
+          <!--<div>
+            <form id="register" class="yolo">
+              <fieldset>
+                <label for="Username">Username<br></label>
+                <input id="Username" name="Username" type="text">
+                <label for="email">Email<br></label>
+                <input id="email" name="email" type="text">
+                <label for="password">Password<br></label>
+                <input id="pasword" name="password" type="password">
+                <input type="submit" value="Register">
+                <input type="button" value="Cancel" id="Cancel">
+              </fieldset>
+            </form>
+          </div>-->
+
+          <div>
+            <form id="login" class="yolo">
+              <fieldset>
+                <label for="Username">Username or Email<br></label>
+                <input id="Username" name="Username" type="text">
+                <label for="password">Password<br></label>
+                <input id="password" name="password" type="password">
+                <a href="salut tocard">forgot password<br></a>
+                <input type="submit" value="Log In">
+                <input type="button" value="Create Account" id="Create">
+              </fieldset>
+            </form>
+          </div>
+
       {{/if}}
 
 </body>
